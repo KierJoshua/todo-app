@@ -11,6 +11,7 @@ function App() {
   const [taskName, setTaskName] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [searchTitle, setSearchTitle] = useState("");
 
   const handleIconClick = () => {
     fileInputRef.current.click();
@@ -76,6 +77,10 @@ function App() {
     setSelectedTasks([]);
   };
 
+  const filteredTasks = toDo.filter((task) =>
+    task.name.toLowerCase().includes(searchTitle.toLowerCase())
+  );
+
   return (
     <div className="bg-[#FAF0EF] min-h-screen flex flex-col">
       {/* MAIN CONTENT */}
@@ -83,21 +88,22 @@ function App() {
         <div className="w-3/5">
           <input
             type="text"
-            placeholder="To Do List Title"
+            placeholder="Search To Do List Title"
             className="w-full bg-transparent border-0 border-b-2 border-[#9D8065] text-[#0A1F56] text-2xl placeholder-[#0A1F56] focus:outline-none focus:ring-0"
+            value={searchTitle}
+            onChange={(e) => setSearchTitle(e.target.value)}
           />
 
-          {toDo.length > 0 ? (
-            toDo.map((task) => (
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map((task) => (
               <div
                 key={task.id}
                 className={`mt-5 rounded-full p-4 flex items-center relative transition-colors duration-200 ${
                   selectedTasks.includes(task.id) ? "bg-blue-200" : "bg-white"
                 }`}
               >
-                {/* Circle selection icon */}
                 <div
-                  className={`w-6 h-6 rounded-full border-2 mr-4 flex-shrink-0 cursor-pointer flex items-center justify-center ${
+                  className={`w-6 h-6 rounded-full border-2 mr-4 cursor-pointer flex items-center justify-center ${
                     selectedTasks.includes(task.id)
                       ? "bg-[#0A1F56] border-[#0A1F56]"
                       : "border-[#C7B29A]"
@@ -121,7 +127,9 @@ function App() {
                 {/* Task name */}
                 <h3
                   className={`ml-4 flex-1 text-3xl bg-transparent border-0 border-b border-[#9D8065] focus:outline-none ${
-                    selectedTasks.includes(task.id) ? "text-white" : "text-[#0A1F56]"
+                    selectedTasks.includes(task.id)
+                      ? "text-white"
+                      : "text-[#0A1F56]"
                   }`}
                 >
                   {task.name}
@@ -146,8 +154,7 @@ function App() {
             ))
           ) : (
             <div className="bg-transparent rounded-full border border-[#9D8065] text-xl p-5 mt-5">
-              There are no tasks yet. Click{" "}
-              <span className="underline text-[#ae8e70]">Edit</span> to start.
+              There are no tasks yet. <span className="underline text-[#9D8065]">Edit</span> to start.
             </div>
           )}
         </div>
@@ -160,24 +167,23 @@ function App() {
 
           {/* Delete selected button */}
           <div className="flex gap-2">
-          {selectedTasks.length > 0 && (
-            <button
-              className="btn mt-4 self-end px-8 py-2 border border-[#0A1F56] cursor-pointer text-[#0A1F56] rounded-full text-md hover:bg-[#0A1F56] hover:text-white transition"
-              onClick={handleDeleteSelected}
-            >
-              Remove All Done Tasks
-            </button>
-          )}
+            {selectedTasks.length > 0 && (
+              <button
+                className="btn mt-4 self-end px-8 py-2 border border-[#0A1F56] cursor-pointer text-[#0A1F56] rounded-full text-md hover:bg-[#0A1F56] hover:text-white transition"
+                onClick={handleDeleteSelected}
+              >
+                Remove All Done Tasks
+              </button>
+            )}
 
-          {/* Add/Edit button */}
-          <button
-            className="btn mt-4 self-end px-8 py-2 border bg-[#9D8065] border-[#9D8065] cursor-pointer text-white rounded-full text-md hover:bg-[#9D8065] hover:text-white transition"
-            onClick={() => document.getElementById("my_modal_3").showModal()}
-          >
-            {toDo.length > 0 ? "Add" : "Edit"}
-          </button>
+            {/* Add/Edit button */}
+            <button
+              className="btn mt-4 self-end px-8 py-2 border bg-[#9D8065] border-[#9D8065] cursor-pointer text-white rounded-full text-md hover:bg-[#9D8065] hover:text-white transition"
+              onClick={() => document.getElementById("my_modal_3").showModal()}
+            >
+              {toDo.length > 0 ? "Add" : "Edit"}
+            </button>
           </div>
-          
         </div>
 
         {/* MODAL */}
